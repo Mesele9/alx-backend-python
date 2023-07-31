@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """ Test file """
 import unittest
 from parameterized import parameterized
@@ -17,4 +17,3 @@ class TestAccessNestedMap(unittest.TestCase):
         """ a method to test access_nested_map function """
         result = access_nested_map(nested_map, path)
         self.assertEqual(result, expected_result)
-
