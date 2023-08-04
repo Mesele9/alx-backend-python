@@ -78,7 +78,8 @@ class TestGithubOrgClient(unittest.TestCase):
                           '_public_repos_url',
                           new_callable=PropertyMock
                           ) as mock_public_repos_url:
-            mock_public_repos_url.return_value = "https://api.github.com/users/google/repos"
+            url = "https://api.github.com/users/google/repos"
+            mock_public_repos_url.return_value = url
 
             with patch('client.get_json') as mock_get_json:
                 mock_get_json.return_value = [repo]
