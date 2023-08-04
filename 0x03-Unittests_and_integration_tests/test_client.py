@@ -61,3 +61,37 @@ class TestGithubOrgClient(unittest.TestCase):
             )
 
             self.assertEqual(repos_list, repos_payload)
+
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False),
+        ])
+    def test_has_license(self,
+                         repo: Dict,
+                         license_key: str,
+                         expected_result: bool) -> None:
+        """ Test the has_license method """
+        # Create an instance of GithubOrgClient
+        client = GithubOrgClient("google")
+
+        with patch.object(GithubOrgClient,
+                          '_public_repos_url',
+                          new_callable=PropertyMock
+                          ) as mock_public_repos_url:
+            mock_public_repos_url.return_value = "https://api.github.com/users/google/repos"
+
+            with patch('client.get_json') as mock_get_json:
+                mock_get_json.return_value = [repo]
+
+                # Call the has_license method with the given license_key
+                result = client.has_license(license_key)
+
+                # Assert that GithubOrgClient._public_repos_url was called once
+                mock_public_repos_url.assert_called_once()
+
+                # Assert that get_json was called once with the correct URL
+                mock_get_json.assert_called_once_with(
+                                "https://api.github.com/users/google/repos")
+
+                # Assert that the result of has_license is the expected result
+                self.assertEqual(result, expected_result)
