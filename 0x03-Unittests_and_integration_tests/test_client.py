@@ -111,18 +111,18 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         """ Sets up class fixtures before running tests """
-        route_payload = {
+        cls.route_payload = {
                 'https://api.github.com/orgs/google': cls.org_payload,
                 'https://api.github.com/orgs/google/repos': cls.repos_payload,
         }
 
-    def get_payload(url):
-        if url in route_payload:
-            return Mock(**{'json.return_value': route_payload[url]})
-        return HTTPError
+        def get_payload(url):
+            if url in route_payload:
+                return Mock(**{'json.return_value': route_payload[url]})
+            return HTTPError
 
-    cls.get_patcher = patch("requests.get", side_effect=get_payload)
-    cls.get_patcher.start()
+        cls.get_patcher = patch("requests.get", side_effect=get_payload)
+        cls.get_patcher.start()
 
     def test_public_repos(self) -> None:
         """Tests the public_repos method"""
